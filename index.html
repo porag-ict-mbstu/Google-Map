@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Google Map</title>
+    <style>
+        #map {
+            height: 550px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="map"></div>
+
+    <script>
+        function printDataToConsole() {
+            var name = document.getElementById("name").value;
+            var location = document.getElementById("location").value;
+            console.log("Name : " + name + "\nLocation : " + location);
+        }
+
+
+        function initMap() {
+
+
+            function getModal(lat, lng) {
+
+
+                return '<div style="padding:20px">' +
+                    '<input type="text" id="location" value="Latitude: ' + lat + ', Longitude: ' + lng + '" >' +
+                    '<br/>' +
+                    '<br/>' +
+                    '<input type="text" id="name" value="Ashikur Rahman">' +
+                    '<br/>' +
+                    '<br/>' +
+                    '<input type="button" value="Send" onClick="printDataToConsole()"></div>'
+            }
+
+            // Add Marker Function
+            function addMarker(props, map) {
+
+                var marker = new google.maps.Marker({
+                    position: props.coords,
+                    map: map,
+                    draggable: true,
+                    animation: google.maps.Animation.DROP
+                });
+
+
+                // Check content
+                if (props.content) {
+
+                    var infoWindow = new google.maps.InfoWindow({
+                        content: props.content
+                    });
+
+                    marker.addListener('click', function() {
+                        infoWindow.open(map, marker);
+                    });
+                }
+
+            }
+
+            function showPosition(position) {
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude
+                var modal = getModal(lat, lng);
+                var currentLocation = {
+                    coords: {
+                        lat: lat,
+                        lng: lng
+                    },
+                    content: modal
+                }
+                var options = {
+                        zoom: 7,
+                        center: {
+                            lat: lat,
+                            lng: lng
+                        }
+                    }
+                    // New map
+                var map = new google.maps.Map(document.getElementById('map'), options);
+                //console.log(document.getElementById('map').innerHTML)
+                addMarker(currentLocation, map);
+            }
+
+            function getLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition);
+                } else {
+                    x.innerHTML = "Geolocation is not supported by this browser.";
+                }
+            }
+
+
+
+            // Load current location
+            getLocation();
+
+
+
+
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPdqqRzfRooehEo4z0_QSC72WCMzrcBfk&callback=initMap">
+    </script>
+</body>
+
+</html>
